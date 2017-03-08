@@ -1,0 +1,14 @@
+{
+  "scripts": {
+    "start": "reveal-md index.md -w",
+    "print": "reveal-md index.md --print jared-forsyth-type-systems.pdf"
+  },
+  "name": "rev",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {},
+  "license": "MIT",
+  "dependencies": {
+    "reveal-md": "^0.1.2"
+  }
+}
