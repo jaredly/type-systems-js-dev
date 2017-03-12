@@ -156,6 +156,8 @@ middle of a running session and try to figure out how your data got so weird.
 alert(1, 2, 3, 4, 5)
 ```
 
+but it backfires
+
 Note: So what does JavaScript do? It tries to figure out what you meant,
 giving you the benefit of the doubt that you probably didn't write a bug. This
 ends up backfiring big time, because it makes it much harder to diagnose
