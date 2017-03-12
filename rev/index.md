@@ -3,45 +3,9 @@ title: Type systems will make you a better JavaScript programmer
 theme: mine
 revealOptions:
   transition: fade
-  showNotes: false
+  showNotes: true
+
 ---
-
-Feedbacks:
-- what do i mwan by better programmer
-  - by the way, when you come back to your code
-- maybe (javascript) programmer
-- eslint (don't need to say "popular linter")
-- "writing simple code"
-  - non-clever
-  - maybe say non-clever instead of "simple"
-  here's an example of doing things too clever
-  -> `on + (b ? 'click' : 'mousedown')`
-- closing line of the "here's flow" section, let's all use this! it's the best
-  stuff
-
-Ben:
-- super practical (maybe say "how to get started")
-  - maybe "here's a link to how to get started"
-- more code examples, more screenshots, more error messages
-- with "these are bad js behaviors", maybe circle back w/ what flow would say
-- insert a slide after "helpful / not helpful" - "js tries to be helpful &
-  guess what you meant. this actually makes it harder to diagnose problems" --
-  because if the machine needs to figure it out, that means the next coder
-  coming in will need to figure out
-- "what is a function you can't type in flow"
-  - show code snippet
-- underlying theme "flow should play better w/ react"
-- instroduce the concept of static type checking as a way to catch bugs
-  - they're like lint in development experience
-  - but like runtime checks in comprehensiveness
-- maybe say "i'm gonna give you
-- add comments "// data might be null here" > RealContentWithDataLoaded
-- loading | answering | finished
-  - show me three application screens
-  - show that the three states now map to
-- maybe add an example of what a tagged union might help you catch.
-  - if you're trying to use the wrong stuff
-  - "would you rather be debugging it now or later"
 
 
 # Type systems
@@ -126,11 +90,18 @@ Note: but there's plenty of WAT where JavaScript tries to guess what to do,
 
 ---
 
-### What do we do?
+## How to get more type errors
 
 - linters
 - custom runtime type checking
 - static type checking
+
+---
+
+## Linters
+
+Note: you might be thinking "Linters? They don't have anything to do with
+types". But in fact they know about 2 types: any and "not declared"
 
 ---
 
@@ -139,16 +110,34 @@ Note: but there's plenty of WAT where JavaScript tries to guess what to do,
 only know about 2 types
 
 - any
-- not defined
+- not declared
 
-Note: Linters frequently have rudimentary type checking built in. I say
-  rudimentary -- there are only 2 types: "any" and "not defined". An
+```js
+// myfn.js
+function doSomething(argument) {
+  return argment + 1 // ERROR argment is never declared
+}
+```
+
+Note:
+And using a variable that's never declared in non-strict javascript is a
+disaster waiting to happen. Even in "strict mode", you won't know about the
+error until runtime when the code gets executed.
+
+TODO animate between
+
+<!--
+
+Linters frequently have rudimentary type checking built in. I say
+  rudimentary - there are only 2 types: "any" and "not declared". An
   identifier of type "any" can be used anywhere, and an identifier of type
-  "not defined" is an error.
+  "not declared" is an error.
 
   Now this is a good start, but we'd really like more help than that - stuff
   like trying to access a property that doesn't exist (e.g. via a typo or
   botched refactor), or calling a function with the wrong number of arguments.
+
+-->
 
 ---
 
@@ -157,15 +146,56 @@ Note: Linters frequently have rudimentary type checking built in. I say
 Sometimes useful, frequently annoying.
 
 ```js
-function doSomething(a, b) {
-  if (arguments.length !== 2)
-    throw new Error('must be called with 2 arguments')
-  if (!a || typeof a !== 'object')
-    throw new Error('a must be an object')
-  if (!a.thing || !Array.isArray(a.thing))
-    throw new Error('a.thing must be an array')
-  if (typeof b !== 'number')
-    throw new Error('b must be a number')
+// `doSomething` takes 3 arguments:
+// a string, a list, and a number
+
+// Should be errors
+doSomething()
+doSomething("hello", "June")
+doSomething(1, 2, 3, 4, 5, 6)
+
+// Valid usage
+doSomething("hello", ["June"], 10)
+doSomething("hello", ["June", "July"], 10)
+```
+
+Note: Say you have a function `doSomething`, which takes three arguments
+
+Now, what are situations in which a function would be called with incorrect
+arguments? Hopefully not immediately on the day you write it (although that
+does happen). But over the lifetime of a project, things get refactored,
+variables get added, removed, reused. And suddently it takes a lot of effort
+during a refactor to make sure you're just calling functions with the correct
+arguments!
+
+---
+
+### Custom runtime type checking
+
+Sometimes useful, frequently annoying.
+
+```js
+function doSomething(a, b, c) {
+  if (arguments.length !== 3)
+    throw new Error('must be called with 3 arguments')
+}
+```
+
+
+### Custom runtime type checking
+
+Sometimes useful, frequently annoying.
+
+```js
+function doSomething(a, b, c) {
+  if (arguments.length !== 3)
+    throw new Error('must be called with 3 arguments')
+  if (typeof a !== 'string')
+    throw new Error('a must be a string')
+  if (!Array.isArray(b))
+    throw new Error('b must be an array')
+  if (typeof c !== 'number')
+    throw new Error('c must be a number')
 }
 ```
 
@@ -175,6 +205,18 @@ Note: If you're using runtime type checks to do things that a type checker
   This is defensive programming, right? And if you're super into this there
   are libraries that will check schemas at runtime to take away some of the
   boilerplate.
+
+---
+
+### Custom runtime type checking
+
+```js
+// Acme Statically Typed Langugage™
+func doSomething(a: String, b: Array<String>, c: int) -> int {
+}
+```
+
+Note: In a statically typed language, you could just do something like this:
 
 ---
 
@@ -207,7 +249,7 @@ Note: Even if you didn't have a type checker at all, working in a more-typed
 
 ---
 
-## Write simple code
+## Write unclever code
 
 If you're at your most clever when you write the code, what hope do you have
 of debugging it later?
