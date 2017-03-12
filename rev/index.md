@@ -413,7 +413,6 @@ class Component extends MyThing {
 
 ### Getting more type errors in JS
 
-
 <table>
 <thead>
   <tr>
@@ -461,11 +460,37 @@ class Component extends MyThing {
 </tr>
 </table>
 
-
-
+Note: At Khan Academy, we've recently started using Flow in our production
+JavaScript, and on the whole we've been very happy with the results.
 
 ---
 
+## Thinking with types
+
+Note: So I've just gone over the ways we can get more informative type errors,
+which will help us
+- track down bugs to their actual source
+- document our code & understand how functions are to be used
+- refactor with confidence
+
+But now I want to talk about how it will change the way you program.
+
+---
+
+### Thinking with types
+
+- clever code
+- implicit state machines
+- type-first development
+
+Note:
+
+One of the things I've run into when adding flow to an existing project is
+that there are some functions where it's really hard to come up with a type
+that will satisfy `flow`. Nearly every time, I think about it a little &
+realize that the function is being too clever.
+
+---
 
 ### Thinking about types will improve your code
 
@@ -481,6 +506,35 @@ Note: Even if you didn't have a type checker at all, working in a more-typed
 
 ---
 
+### Clever code
+
+```js
+  props['on' + (fastClick ? 'MouseDown' : 'Click')] = myFn
+```
+
+```js
+  function doAllTheThings(first, second, third) {
+    if (third === undefined) {
+      third = second
+      first = {options: first}
+    }
+  }
+```
+
+```js
+  function doAllTheThings(isBoolean, data) {
+    if (isBoolean) { // data is a boolean
+    } else { // data is a string
+    }
+  }
+```
+
+---
+
+> If it's hard to type check, it's probably hard to understand
+
+---
+
 ## Write unclever code
 
 If you're at your most clever when you write the code, what hope do you have
@@ -493,32 +547,267 @@ of debugging it later?
 
 ---
 
-## Implicit invariants
-or "use types that make invalid states impossible"
+> Everyone knows that debugging is twice as hard as writing a program in the first place. So if you're as clever as you can be when you write it, how will you ever debug it?
+> - Brian Kernighan
 
 ---
 
-## Implicit invariants: state machines & initialization
+### Implicit state machines
+
+---
+
+### Implicit state machines
 
 ```js
   render() {
     if (this.state.loading) {
       return <div> ... </div>
     }
-    if (this.state.error || !this.state.data) {
+    if (this.state.error) {
       return <div> ... </div>
     }
-    // cool we're loaded & have data
     return <div>
-      ...
+      {somehowFormat(this.state.data)}
     </div>
   }
 ```
 
-Note: It's pretty common to have "initialization & error handling" in a react
+Note: frequently we have React components that are really representing little
+state machines. Here's an example that might look familiar -- we have a
+component that fetches some data, and so it starts out loading, and it will
+either display an error on failure or display the data in some wonderful way.
+
+
+.. more notes
+It's pretty common to have "initialization & error handling" in a react
   component. You make a network request, and while it's loading you do one
   thing, in an error condition you do another thing, and then there's the
   happy path where you render all the stuff.
+
+---
+
+### Implicit state machines
+
+```js
+  state: {
+    loading: boolean,
+    error: ?string,
+    data: ?SomeObject,
+  }
+```
+
+Note: So this is the naive way to type the state of this component, and makes
+sense based on the way we frequently write react components.
+
+---
+
+### Implicit state machines
+
+```js
+  render() {
+    if (this.state.loading) {
+      return <div> ... </div>
+    }
+    if (this.state.error) {
+      return <div> ... </div>
+    }
+    return <div>
+      {somehowFormat(this.state.data)}
+      // Flow errors here saying `this.state.data`
+      // might be null
+    </div>
+  }
+```
+
+Note: Now, you're looking at the code thinking "I've covered all the bases! If
+we're not loading and there's no error, then of course data will not be null.
+
+---
+
+### Implicit state machines
+
+```js
+  render() {
+    if (this.state.loading) {
+      return <div> ... </div>
+    }
+    if (this.state.error) {
+      return <div> ... </div>
+    }
+    if (!this.state.data)
+      throw new Error('lol this will never happen')
+    return <div>
+      {somehowFormat(this.state.data)}
+    </div>
+  }
+```
+
+Note: Here's one way to fix it! If you find yourself doing this, it's a huge
+warning sign. Let me go to a more complex example to explain why.
+
+---
+
+### The Exercise Lifecycle
+
+<div style="display: flex; flex-direction: row; align-items: flex-end;
+font-size: 20px; justify-content: center">
+<div style="display: block">
+<div>Loading</div>
+<img src="/images/loading1.png" width=200>
+</div>
+<div>
+<div>Answering</div>
+<img src="/images/answering.png" width=200>
+</div>
+<div>
+<div>Finished</div>
+<img src="/images/finished.png" width=200>
+</div>
+</div>
+
+---
+
+### The naive state representation
+
+```js
+state: {
+  loading: boolean,
+  problems: ?Array<Problem>,
+  answers: ?Array<Answer>,
+  currentProblem: number,
+  pointsData: ?PointsData,
+}
+```
+
+Note: So here's the naive way of representing the state involved - we just
+think of all the information we need to track and we throw it on there.
+
+The problem with this representation is that there are all sorts of illegal
+states that will still type check fine.
+
+
+---
+
+### The naive state representation
+
+<div style="display: flex; flex-direction: row; align-items: flex-start">
+<pre><code class="lang-js">// Loading problems
+state = {
+  loading: true,
+  problems: null,
+  answers: null,
+  currentProblem: 0,
+  pointsData: null,
+}
+
+</code></pre>
+<pre><code class="lang-js">// Answering
+state = {
+  loading: false,
+  problems: [...some array],
+  answers: [...some array],
+  currentProblem: 3,
+  pointsData: null,
+}
+
+</code></pre>
+<pre><code class="lang-js">// Finished
+state = {
+  loading: false,
+  // not relevant anymore
+  problems: [...some array],
+  answers: [...some array],
+  currentProblem: 0,
+  pointsData: {some data},
+}
+</code></pre>
+</div>
+
+Note: So here's the naive way of representing the state involved - we just
+think of all the information we need to track and we throw it on there.
+
+The problem with this representation is that there are all sorts of illegal
+states that will still type check fine.
+
+---
+
+### The naive state representation
+
+Allows illegal states
+
+```js
+state: {
+  loading: false,
+  problems: [...some array],
+  answers: null,
+  currentProblem: 0,
+  pointsData: null,
+}
+```
+
+Note: Based on the type definition, this is a valid state. But as the
+programmer writing the code, you think "of course when problems is present,
+answers will also be present -- they go together". You might know that, but
+flow doesn't know that, and the next developer who comes along also won't
+necessarily know that.
+
+---
+
+### Representing the state machine
+
+Make illegal states invalid
+
+```swift
+// swift-land
+enum State {
+  case Loading
+  case Answering(
+    problems: Array<Problem>,
+    answers: Array<Answer>,
+    currentProblem: int
+  )
+  case Finished(PointsData)
+}
+```
+
+---
+
+### Representing the state machine
+
+Make illegal states invalid
+
+```js
+type State = {
+  screen: 'loading',
+} | {
+  screen: 'answering',
+  problems: Array<Problem>,
+  answers: Array<Answer>,
+  currentProblem: number,
+} | {
+  pointsData: PointsData
+}
+```
+
+---
+
+### The naive state representation
+
+```js
+state: {
+  loadingProblems: boolean,
+  loadingPoints: boolean,
+  problems: ?Array<Problem>,
+  answers: ?Array<Answer>,
+  currentProblem: number,
+  pointsData: ?PointsData,
+}
+```
+
+---
+
+## Implicit invariants
+or "use types that make invalid states impossible"
 
 ---
 
