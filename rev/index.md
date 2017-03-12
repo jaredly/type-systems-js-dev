@@ -107,7 +107,7 @@ attribute of null or undefined.
 
 ### Either you get weird type errors late
 
-```
+```js
   var x = 10
   var y = x.parent
   // ^ the real error is thinking `x` has a `.parent`
@@ -124,14 +124,16 @@ from the actual source of the error.
 
 ### ...or type errors become logic errors
 
-```
+```js
 function doSomething(m) {
+  // numbers don't have a count
   if (m.count > 2) {
     return "large"
   } else {
     return "small"
   }
 }
+// but js will happily return "small" here
 doSomething(5)
 ```
 
@@ -145,12 +147,14 @@ middle of a running session and try to figure out how your data got so weird.
 
 ---
 
-### JavaScript tries to avoid errors at all costs
+### JavaScript tries to avoid errors
 
-- `2/'' === Infinity`
-- `2 + {} === '2[object Object]'`
-- `2 + 'phone' -> NaN`
-- `alert(1, 2, 3, 4, 5)`
+```
+2/'' === Infinity
+2 + {} === '2[object Object]'
+2 + 'phone' -> NaN
+alert(1, 2, 3, 4, 5)
+```
 
 Note: So what does JavaScript do? It tries to figure out what you meant,
 giving you the benefit of the doubt that you probably didn't write a bug. This
@@ -274,20 +278,6 @@ Note: If you're using runtime type checks to do things that a type checker
   This is defensive programming, right? And if you're super into this there
   are libraries that will check schemas at runtime to take away some of the
   boilerplate.
-
----
-
-### Custom runtime type checking
-
-Having a language that supports type annotations makes it so much easier
-
-```js
-// Acme Statically Typed Langugage™
-func doSomething(a: String, b: Array<String>, c: int) -> int {
-}
-```
-
-Note: In a statically typed language, you could just do something like this:
 
 ---
 
@@ -480,7 +470,7 @@ But now I want to talk about how it will change the way you program.
 ### Thinking with types
 
 - clever code
-- implicit state machines
+- implicit invariants
 - type-first development
 
 Note:
@@ -492,25 +482,35 @@ realize that the function is being too clever.
 
 ---
 
-### Thinking about types will improve your code
+### Clever code
 
-Note: Even if you didn't have a type checker at all, working in a more-typed
-  language (like flow, swift, java, etc) will help you write code that is
-  easier to maintain, easier to think about.
+Note: There is a ton of valid javascript that flow would reject; so if we're
+restricting ourselves, what are we gaining?
 
-  There is a ton of valid javascript that flow would reject; so if we're
-  restricting ourselves, what are we gaining?
-
-  Code that flow can type is also code that other people will be able to
-  understand better.
+Code that flow can type is also code that other people will be able to
+understand better.
 
 ---
 
 ### Clever code
 
+clever
 ```js
   props['on' + (fastClick ? 'MouseDown' : 'Click')] = myFn
 ```
+
+unclever
+```js
+  if (fastClick) {
+    props.onMouseDown = myFn
+  } else {
+    props.onClick = myFn
+  }
+```
+
+---
+
+### Clever code
 
 ```js
   function doAllTheThings(first, second, third) {
@@ -535,40 +535,45 @@ Note: Even if you didn't have a type checker at all, working in a more-typed
 
 ---
 
+<!--
 ## Write unclever code
 
 If you're at your most clever when you write the code, what hope do you have
 of debugging it later?
 
----
+- - -
 
 > If you're having a hard time writing the type of an object or function,
 > maybe it's too clever.
 
----
+- - -
 
-> Everyone knows that debugging is twice as hard as writing a program in the first place. So if you're as clever as you can be when you write it, how will you ever debug it?
+-->
+
+> Everyone knows that debugging is twice as hard as writing a program in the first place.
+> So if you're as clever as you can be when you write it, how will you ever debug it?
 > - Brian Kernighan
 
 ---
 
-### Implicit state machines
+## Implicit invariants
 
 ---
 
-### Implicit state machines
+### Implicit invariants
 
 ```js
+  state: {
+    loading: boolean,
+    error: ?string,
+    data: ?SomeObject,
+  }
   render() {
-    if (this.state.loading) {
-      return <div> ... </div>
-    }
-    if (this.state.error) {
-      return <div> ... </div>
-    }
-    return <div>
-      {somehowFormat(this.state.data)}
-    </div>
+    if (this.state.loading) return ...
+    if (this.state.error || this.state.data) return ...
+    return <button onClick={this.onClick}>
+      Click me!
+    </button>
   }
 ```
 
@@ -577,73 +582,95 @@ state machines. Here's an example that might look familiar -- we have a
 component that fetches some data, and so it starts out loading, and it will
 either display an error on failure or display the data in some wonderful way.
 
-
-.. more notes
-It's pretty common to have "initialization & error handling" in a react
-  component. You make a network request, and while it's loading you do one
-  thing, in an error condition you do another thing, and then there's the
-  happy path where you render all the stuff.
-
 ---
 
-### Implicit state machines
+### Implicit invariants
 
 ```js
-  state: {
-    loading: boolean,
-    error: ?string,
-    data: ?SomeObject,
+  onClick = () => {
+    // Flow errors: "this.state.data might be null"
+    alert(this.state.data.name)
+  }
+  render() {
+    if (this.state.loading) return ...
+    if (this.state.error || this.state.data) return ...
+    return <button onClick={this.onClick}>
+      Click me!
+    </button>
   }
 ```
 
-Note: So this is the naive way to type the state of this component, and makes
-sense based on the way we frequently write react components.
-
 ---
 
-### Implicit state machines
+### Implicit invariants
 
 ```js
-  render() {
-    if (this.state.loading) {
-      return <div> ... </div>
-    }
-    if (this.state.error) {
-      return <div> ... </div>
-    }
-    return <div>
-      {somehowFormat(this.state.data)}
-      // Flow errors here saying `this.state.data`
-      // might be null
-    </div>
-  }
-```
-
-Note: Now, you're looking at the code thinking "I've covered all the bases! If
-we're not loading and there's no error, then of course data will not be null.
-
----
-
-### Implicit state machines
-
-```js
-  render() {
-    if (this.state.loading) {
-      return <div> ... </div>
-    }
-    if (this.state.error) {
-      return <div> ... </div>
-    }
+  onClick = () => {
     if (!this.state.data)
       throw new Error('lol this will never happen')
-    return <div>
-      {somehowFormat(this.state.data)}
-    </div>
+    alert(this.state.data.name)
+  }
+  render() {
+    if (this.state.loading) return ...
+    if (this.state.error || this.state.data) return ...
+    return <button onClick={this.onClick}>
+      Click me!
+    </button>
   }
 ```
 
 Note: Here's one way to fix it! If you find yourself doing this, it's a huge
-warning sign. Let me go to a more complex example to explain why.
+warning sign.
+
+"Of course it's not null" you think, "this callback function couldn't have
+been triggered if data wasn't present!"
+
+so what do we do here? How can we get flow off our backs by proving to
+it that, if the button w/ the onClick handler was rendered, then
+`this.state.data` is definitely true?
+
+---
+
+### Implicit invariants
+
+```js
+  render() {
+    if (this.state.loading) return ...
+    if (this.state.error || this.state.data) return ...
+    return <TheContents data={this.state.data} />
+  }
+}
+class TheContents extends Component {
+  onClick = () => {
+    alert(this.props.data.name) // props.data is never null!
+  }
+  render() {
+    return <button onClick={this.onClick}>Click me!</button>
+  }
+```
+
+Note: Make a child component that gets `this.state.data` as props *only when it's
+present*, and it will be clearer to flow *and to readers*.
+
+Also: this doesn't just apply to state. You could have an optional
+thing come in as props, and if you want a scope in which you know that it
+will always be non-null, make a child component!
+
+The point I want to drive home here is: If you didn't have flow watching
+your back, yes it would save you the trouble of adding the extra layer, but
+your code would be *more* complicated & less readable as a result. You would
+have to keep more things in your head ("is X initialized yet?") as a result,
+and you'd have more bugs.
+
+---
+
+# Redux!
+
+state machines here too
+
+Note: Maybe your app has gotten complex enough that you want to add redux into
+  the mix. How do you deal with the implicit state machines that develop?
+
 
 ---
 
@@ -670,7 +697,7 @@ font-size: 20px; justify-content: center">
 ### The naive state representation
 
 ```js
-state: {
+type State = {
   loading: boolean,
   problems: ?Array<Problem>,
   answers: ?Array<Answer>,
@@ -682,9 +709,16 @@ state: {
 Note: So here's the naive way of representing the state involved - we just
 think of all the information we need to track and we throw it on there.
 
-The problem with this representation is that there are all sorts of illegal
-states that will still type check fine.
+It's common to just start with an empty object and throw things on as
+you need them.
 
+Here's a hypothetical object that would manage the state of a quiz that a
+learner is taking on Khan Academy. There are 3 phases of this quiz; first
+there's a loading screen while we fetch the questions. Then they're taking
+the quiz, going through each question one by one.
+
+Then when they finish there's a success screen, telling them how many points
+they got.
 
 ---
 
@@ -723,8 +757,7 @@ state = {
 </code></pre>
 </div>
 
-Note: So here's the naive way of representing the state involved - we just
-think of all the information we need to track and we throw it on there.
+Note: And here's some example data for the different screens I showed.
 
 The problem with this representation is that there are all sorts of illegal
 states that will still type check fine.
@@ -735,15 +768,25 @@ states that will still type check fine.
 
 Allows illegal states
 
-```js
-state: {
+<div style="display: flex; flex-direction: row; align-items: flex-start">
+<pre><code class="lang-js">type State = {
+  loading: boolean,
+  problems: ?Array&lt;Problem>,
+  answers: ?Array&lt;Answer>,
+  currentProblem: number,
+  pointsData: ?PointsData,
+}
+</code></pre>
+<pre><code class="lang-js">state = {
   loading: false,
   problems: [...some array],
-  answers: null,
+  answers: null, // oops
   currentProblem: 0,
   pointsData: null,
 }
-```
+</code></pre>
+</div>
+
 
 Note: Based on the type definition, this is a valid state. But as the
 programmer writing the code, you think "of course when problems is present,
@@ -757,7 +800,7 @@ necessarily know that.
 
 Make illegal states invalid
 
-```swift
+```js
 // swift-land
 enum State {
   case Loading
@@ -770,6 +813,10 @@ enum State {
 }
 ```
 
+Note:
+If you were lucky enough to be using an ML-family language like Swift or Rust
+or Ocaml, you'd be able to represent the State like this:
+
 ---
 
 ### Representing the state machine
@@ -777,6 +824,7 @@ enum State {
 Make illegal states invalid
 
 ```js
+// Flow-land, a "tagged union"
 type State = {
   screen: 'loading',
 } | {
@@ -785,156 +833,17 @@ type State = {
   answers: Array<Answer>,
   currentProblem: number,
 } | {
+  screen: 'finished',
   pointsData: PointsData
 }
 ```
 
----
+Note: But here in javascript land we've got something similar - a tagged union.
 
-### The naive state representation
-
-```js
-state: {
-  loadingProblems: boolean,
-  loadingPoints: boolean,
-  problems: ?Array<Problem>,
-  answers: ?Array<Answer>,
-  currentProblem: number,
-  pointsData: ?PointsData,
-}
-```
-
----
-
-## Implicit invariants
-or "use types that make invalid states impossible"
-
----
-
-## Implicit invariants: state machines & initialization
-
-```js
-  state: {
-    loading: boolean,
-    error: ?string,
-    data: ?SomeComplicatedDataType,
-  }
-```
-
-```js
-  onClick() {
-    if (!this.state.data) return // this will never happen
-    // ok now I can use this.state.data
-  }
-```
-
-Note: The naive thing to do would be to type your state like this.
-
-For one thing, you'll get mad at flow when in every callback function it
-wants you to check that `this.state.data` is not null.
-
-"Of course it's not null" you think, "this callback function couldn't have
-been triggered if data wasn't present!"
-
----
-
-```js
-  render() {
-    if (this.state.loading) ...
-    if (this.state.error || !this.state.data) ...
-    return <RealContentWithDataLoaded
-      data={this.state.data}
-      ...
-    />
-  }
-```
-
-Note: so what do we do here? How can we get flow off our backs by proving to
-it that, if the button w/ the onClick handler was rendered, then
-`this.state.data` is definitely true?
-
-Make a child component that gets `this.state.data` as props *only when it's
-present*, and it will be clearer to flow *and to readers*.
-
-Also: this doesn't just apply to state. You could have an optional
-thing come in as props, and if you want a scope in which you know that it
-will always be non-null, make a child component!
-
-The point I want to drive home here is: If you didn't have flow watching
-your back, yes it would save you thw trouble of adding the extra layer, but
-your code would be *more* complicated & less readable as a result. You would
-have to keep more things in your head ("is X initialized yet?") as a result,
-and you'd have more bugs.
-
----
-
-# Redux!
-
-state machines here too
-
-Note: Maybe your app has gotten complex enough that you want to add redux into
-  the mix. How do you deal with the implicit state machines that develop?
-
----
-
-```js
-type State = {
-  questions: ?Array<Question>,
-  answers: ?Array<Answer>,
-  currentQuestionIndex: number,
-  loading: boolean,
-  finished: boolean,
-  earnedBadgeData: ?BadgeData,
-}
-```
-
-Note: It's common to just start with an empty object and throw things on as
-you need them.
-
-Here's a hypothetical object that would manage the state of a quiz that a
-learner is taking on Khan Academy. There are 3 phases of this quiz; first
-there's a loading screen while we fetch the questions. Then they're taking
-the quiz, going through each question one by one.
-
-Then when they finish there's a success screen, telling them how many points
-they got.
-
----
-
-```swift
-enum State {
-  case Loading
-  case Answering(
-    questions: Array<Question>,
-    answers: Array<Answer>,
-    currentQuestionIndex: Int
-  )
-  case Finished(earnedBadgeData: BadgeData)
-}
-```
-
-Note:
-If you were lucky enough to be using an ML-family language like Swift or Rust
-or Ocaml, you'd be able to represent the State like this:
-
----
-
-```js
-type State = {
-  screen: 'loading',
-} | {
-  screen: 'answering',
-  questions: Array<Question>,
-  answers: Array<Answer>,
-  currentQuestionIndex: number,
-} | {
-  screen: 'finished',
-  earnedBadgeData: BadgeData,
-}
-```
-
-Note:
-But here in javascript land we've got something similar - a tagged union.
+So you can see that the invariant that we previously had to hold inside
+our head "whenever problems is present, answers will be also" is now encoded
+in the type, and therefore enforced by flow, and more understandable to
+maintainers later!
 
 This is a much better representation, because it makes it clear what
 things are going to be optional at what times. Without these types, it might
@@ -946,6 +855,34 @@ certainly won't be clear to a coworker, or to you a month from now.
 
 > If you're making a ton of things optional, you're probably trying to
 > represent a state machine poorly.
+
+---
+
+## A Types First Approach
+
+If you have any complex data objects, write out the types before you dive into
+coding.
+
+Note: Once you get comfortable with the types that flow gives yu
+
+I've found that there are some types of problems where thinking about the
+types first -- specifically the types of the data -- is much better than
+diving into the code and adding types later.
+
+We looked at state machines just now. But also in cases where you're passing
+messages back and forth, or you're making API calls, or you're displaying
+complex data.
+
+Now there are definitely situations where "move fast & type later" is
+perfectly valid.
+
+---
+
+## Conclusion
+
+- JavaScript doesn't give us enough type errors
+- Flow can help!
+- Working with types will help you think better
 
 
 ---
@@ -969,3 +906,5 @@ TODO add code examples for these, it's awesome.
 ---
 
 ### FIN
+
+[jaredforsyth.com/type-systems-js-dev](https://jaredforsyth.com/type-systems-js-dev)
