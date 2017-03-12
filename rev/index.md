@@ -39,13 +39,45 @@ your coworkers happier and improve your peace of mind.
 - a group of things
 - that can be used interchangeably
 
+Note: In very broad terms, you can think of a type as a group of things that
+can be used interchangeably.
+
 ---
 
 ### What is a type?
 
-- numbers (+, -, /)
-- "things that have a `bar` attribute"
+- numbers (`a * b, x - y`)
 - strings
+- things that have a `name` attribute
+
+Note: Numbers can all be validly added together, subtracted, and
+multiplied. Strings can be split, joined, and displayed to the screen.
+And we could also talk about "thinks that have a `name` attribute, as being a
+type.
+
+---
+
+### JavaScript has a type system!
+
+`typeof x`
+
+<table>
+<tr>
+<td>number</td>
+<td>string</td>
+</tr>
+<tr>
+<td>function</td>
+<td>undefined</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>symbol</td>
+</tr>
+<tr>
+<td>object</td>
+</tr>
+</table>
 
 ---
 
@@ -54,39 +86,76 @@ your coworkers happier and improve your peace of mind.
 - when you try to use a thing in a context where it doesn't work.
 - "undefined is not a function"
 
----
-
-### JavaScript has a type system!
-
-- `typeof x`
-- number
-- string
-- object
-- function
+Note: So a type error, for my purposes, is "when you try to use a thing in a
+context where it doesn't work". Now, I'm being intentionally general when I
+say "in a context where it doesn't work", because that means different things
+to different people, and to different language runtimes.
 
 ---
 
-### JavaScript has (runtime)
-### type errors!
+### JavaScript has (runtime) type errors!
 but not nearly as many as one would want.
 
+- `_ is not a function`
+- `cannot read property '_' of null/undefined`
+
+Note: JavaScript has very few kinds of type errors; they're triggered when you
+try to call something that's not a function, and when you try to get an
+attribute of null or undefined.
+
 ---
 
-### helpful
+### Either you get weird type errors late
 
-- `_ is not a function`
-- `cannot read property '_' of _`
+```
+  var x = 10
+  var y = x.parent
+  // ^ the real error is thinking `x` has a `.parent`
+  return y.name
+  // ^ but JS gives us the error here
+```
 
-### so not helpful
+Note: In this trivial example, the actual bug is relatively close to the
+exception that JavaScript gives us. But all to often in real-world projects,
+the place where JavaScript figures out something has gone wrong is far removed
+from the actual source of the error.
+
+---
+
+### ...or type errors become logic errors
+
+```
+function doSomething(m) {
+  if (m.count > 2) {
+    return "large"
+  } else {
+    return "small"
+  }
+}
+doSomething(5)
+```
+
+Note: Even more insidious is when JavaScript doesn't throw an error at all,
+because it tries its best to figure out what you meant and manages to avoid
+anything it considers a type error.
+
+These are frequently even harder to debug, because you don't have an
+`exception` stack trace to get you started. You just have to pause in the
+middle of a running session and try to figure out how your data got so weird.
+
+---
+
+### JavaScript tries to avoid errors at all costs
 
 - `2/'' === Infinity`
 - `2 + {} === '2[object Object]'`
 - `2 + 'phone' -> NaN`
-- `2 + notDefinedAnywhere -> NaN`
+- `alert(1, 2, 3, 4, 5)`
 
-Note: but there's plenty of WAT where JavaScript tries to guess what to do,
-  when in general what you want is for it to tell you where you went wrong.
-  Ok so that last one would throw an error if you're in strict mode.
+Note: So what does JavaScript do? It tries to figure out what you meant,
+giving you the benefit of the doubt that you probably didn't write a bug. This
+ends up backfiring big time, because it makes it much harder to diagnose
+problems.
 
 ---
 
@@ -96,6 +165,8 @@ Note: but there's plenty of WAT where JavaScript tries to guess what to do,
 - custom runtime type checking
 - static type checking
 
+Note: animate in.
+
 ---
 
 ## Linters
@@ -103,11 +174,11 @@ Note: but there's plenty of WAT where JavaScript tries to guess what to do,
 Note: you might be thinking "Linters? They don't have anything to do with
 types". But in fact they know about 2 types: any and "not declared"
 
+Umm maybe cut this section?
+
 ---
 
-### Linters
-
-only know about 2 types
+### Linters know about 2 types
 
 - any
 - not declared
@@ -115,7 +186,7 @@ only know about 2 types
 ```js
 // myfn.js
 function doSomething(argument) {
-  return argment + 1 // ERROR argment is never declared
+  return brgment + 1 // ERROR brgment is never declared
 }
 ```
 
@@ -126,18 +197,15 @@ error until runtime when the code gets executed.
 
 TODO animate between
 
-<!--
+---
 
-Linters frequently have rudimentary type checking built in. I say
-  rudimentary - there are only 2 types: "any" and "not declared". An
-  identifier of type "any" can be used anywhere, and an identifier of type
-  "not declared" is an error.
+### Linters
 
-  Now this is a good start, but we'd really like more help than that - stuff
-  like trying to access a property that doesn't exist (e.g. via a typo or
-  botched refactor), or calling a function with the wrong number of arguments.
-
--->
+<table>
+<tr><td>+ runs ahead of time</td></tr>
+<tr><td>+ very little work</td></tr>
+<tr><td>- very rudimentary</td></tr>
+</table>
 
 ---
 
@@ -181,6 +249,7 @@ function doSomething(a, b, c) {
 }
 ```
 
+---
 
 ### Custom runtime type checking
 
@@ -210,6 +279,8 @@ Note: If you're using runtime type checks to do things that a type checker
 
 ### Custom runtime type checking
 
+Having a language that supports type annotations makes it so much easier
+
 ```js
 // Acme Statically Typed Langugage™
 func doSomething(a: String, b: Array<String>, c: int) -> int {
@@ -220,9 +291,31 @@ Note: In a statically typed language, you could just do something like this:
 
 ---
 
-### React PropTypes
+### Custom runtime type checking
+
+<table>
+<tr><td>- runs at runtime</td></tr>
+<tr><td>- lots of extra boilerplaty code</td></tr>
+<tr><td>+ very powerful</td></tr>
+</table>
+
+---
+
+### React propTypes
 
 Runtime type checking, but less annoying.
+
+```
+const MyThing = React.createClass({
+  propTypes: {
+    first: PropTypes.number,
+    second: PropTypes.arrayOf(PropTypes.string),
+    third: PropTypes.shape({
+      name: PropTypes.string,
+    })
+  },
+})
+```
 
 Note:
 With PropTypes, we have runtime type checking, and it's been pretty
@@ -234,6 +327,145 @@ definition against your props usage & make sure that at least all of the props
 you use are listed there.
 
 ---
+
+### React propTypes
+
+<table>
+<tr><td>- runs at runtime</td></tr>
+<tr><td>- only for React Components</td></tr>
+<tr><td>+ not too much extra code</td></tr>
+<tr><td>+ free documentation</td></tr>
+</table>
+
+Note: documentation, but it might be wrong b/c you haven't updated the prop
+types, and maybe you haven't rendered the thing in that configuration
+recently.
+
+---
+
+## Static type checking
+with flow!
+
+---
+
+### Static type checking
+vs custom runtime checking
+
+```js
+function doSomething(a, b, c) {
+  if (arguments.length !== 3)
+    throw new Error('must be called with 3 arguments')
+  if (typeof a !== 'string')
+    throw new Error('a must be a string')
+  if (!Array.isArray(b))
+    throw new Error('b must be an array')
+  if (typeof c !== 'number')
+    throw new Error('c must be a number')
+}
+```
+
+```js
+function doSomething(a: string, b: Array<string>, c: number) {
+}
+```
+
+---
+
+### Static type checking
+vs React propTypes
+
+```
+class MyThing extends Component {
+  static propTypes = {
+    first: PropTypes.number,
+    second: PropTypes.arrayOf(PropTypes.string),
+    third: PropTypes.shape({
+      name: PropTypes.string,
+    })
+  }
+}
+```
+
+```
+class Component extends MyThing {
+  props: {
+    first: number,
+    second: Array<string>,
+    third: {
+      name: string,
+    }
+  }
+}
+```
+
+---
+
+### Static type checking
+
+<table>
+<tr><td>+ runs ahead of time</td></tr>
+<tr><td>+ not much boilerplate</td></tr>
+<tr><td>+ applies to all fns, variables, etc.</td></tr>
+<tr><td>+ free documentation, never stale</td></tr>
+</table>
+
+---
+
+### Getting more type errors in JS
+
+
+<table>
+<thead>
+  <tr>
+  <td/>
+  <th>Linter</th>
+  <th>Custom</th>
+  <th>PropTypes</th>
+  <th>Flow</th>
+  </tr>
+</thead>
+<tr>
+  <th>When do you know?</th>
+  <td>now</td>
+  <td>runtime</td>
+  <td>runtime</td>
+  <td>now</td>
+</tr>
+<tr>
+  <th>How easy</th>
+  <td>++</td>
+  <td>--</td>
+  <td>+</td>
+  <td>+</td>
+</tr>
+<tr>
+  <th>Where can it be used?</th>
+  <td>+</td>
+  <td>+</td>
+  <td>-</td>
+  <td>+</td>
+</tr>
+<tr>
+<th>How helpful</th>
+<td>--</td>
+<td>++</td>
+<td>+</td>
+<td>+++</td>
+</tr>
+<tr>
+<th>Readability</th>
+<td/>
+<td>-</td>
+<td>+</td>
+<td>+</td>
+</tr>
+</table>
+
+
+
+
+---
+
 
 ### Thinking about types will improve your code
 
