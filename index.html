@@ -31,6 +31,8 @@ doesn&#39;t give us nearly enough type errors.</p>
 the errors that are in our code.</p>
 <p>Then we&#39;ll talk about how thinking with types will improve your code, make
 your coworkers happier and improve your peace of mind.</p>
+<p>Finally I&#39;m going to talk about how having a powerful type system changes the
+way that you code, to make it safer, more readable, and more maintainable.</p>
 </aside></script></section><section  data-markdown><script type="text/template">
 ### What is a type?
 
@@ -81,6 +83,9 @@ when you try to use a thing in a context where it doesn't work.
 context where it doesn&#39;t work&quot;. Now, I&#39;m being intentionally general when I
 say &quot;in a context where it doesn&#39;t work&quot;, because that means different things
 to different people, and to different language runtimes.</p>
+<p>If you pass a number in to a place that expects something with a <code>name</code>
+attribute, that&#39;s wrong! So I&#39;d consider that a type error, but JS doesn&#39;t. So
+type errors depend on the context, language runtime, etc.</p>
 </aside></script></section><section  data-markdown><script type="text/template">
 ### JavaScript has (runtime) type errors!
 but not nearly as many as one would want.
@@ -160,12 +165,12 @@ problems.</p>
 ## Linters
 
 <aside class="notes"><p>you might be thinking &quot;Linters? They don&#39;t have anything to do with
-types&quot;. But in fact they know about 2 types: any and &quot;not declared&quot;</p>
+types&quot;. But in fact they know about 2 types: declared and &quot;not declared&quot;</p>
 <p>Umm maybe cut this section?</p>
 </aside></script></section><section  data-markdown><script type="text/template">
 ### Linters know about 2 types
 
-- any
+- declared
 - not declared
 
 ```js
@@ -192,20 +197,20 @@ error until runtime when the code gets executed.</p>
 Sometimes useful, frequently annoying.
 
 ```js
-// `doSomething` takes 3 arguments:
+// `greet` takes 3 arguments:
 // a string, a list, and a number
 
 // Valid usage
-doSomething("hello", ["June"], 10)
-doSomething("hello", ["June", "July"], 10)
+greet("hello", ["June"], 10)
+greet("hello", ["June", "July"], 10)
 
 // Should be errors
-doSomething()
-doSomething("hello", "June")
-doSomething(1, 2, 3, 4, 5, 6)
+greet()
+greet("hello", "June")
+greet(1, 2, 3, 4, 5, 6)
 ```
 
-<aside class="notes"><p>Say you have a function <code>doSomething</code>, which takes three arguments</p>
+<aside class="notes"><p>Say you have a function <code>greet</code>, which takes three arguments</p>
 <p>Now, what are situations in which a function would be called with incorrect
 arguments? Hopefully not immediately on the day you write it (although that
 does happen). But over the lifetime of a project, things get refactored,
@@ -218,7 +223,7 @@ arguments!</p>
 Sometimes useful, frequently annoying.
 
 ```js
-function doSomething(a, b, c) {
+function greet(greeting, months, age) {
   if (arguments.length !== 3)
     throw new Error('must be called with 3 arguments')
 }
@@ -229,15 +234,15 @@ function doSomething(a, b, c) {
 Sometimes useful, frequently annoying.
 
 ```js
-function doSomething(a, b, c) {
+function greet(greeting, months, age) {
   if (arguments.length !== 3)
     throw new Error('must be called with 3 arguments')
-  if (typeof a !== 'string')
-    throw new Error('a must be a string')
-  if (!Array.isArray(b))
-    throw new Error('b must be an array')
-  if (typeof c !== 'number')
-    throw new Error('c must be a number')
+  if (typeof greeting !== 'string')
+    throw new Error('greeting must be a string')
+  if (!Array.isArray(months))
+    throw new Error('months must be an array')
+  if (typeof age !== 'number')
+    throw new Error('age must be a number')
 }
 ```
 
@@ -250,9 +255,9 @@ function doSomething(a, b, c) {
 ### Custom runtime type checking
 
 <table>
-<tr><td>- only at runtime</td></tr>
-<tr><td>- lots of extra boilerplaty code</td></tr>
 <tr><td>+ very powerful</td></tr>
+<tr><td>- lots of extra boilerplaty code</td></tr>
+<tr><td>- only at runtime</td></tr>
 </table>
 </script></section><section  data-markdown><script type="text/template">
 ### React propTypes
@@ -262,9 +267,9 @@ Runtime type checking, but less annoying.
 ```
 const MyThing = React.createClass({
   propTypes: {
-    first: PropTypes.number,
-    second: PropTypes.arrayOf(PropTypes.string),
-    third: PropTypes.shape({
+    greeting: PropTypes.string,
+    months: PropTypes.arrayOf(PropTypes.string),
+    person: PropTypes.shape({
       name: PropTypes.string,
     })
   },
@@ -282,10 +287,10 @@ you use are listed there.</p>
 ### React propTypes
 
 <table>
-<tr><td>- only at runtime</td></tr>
-<tr><td>- only for React Components</td></tr>
 <tr><td>+ not too much extra code</td></tr>
 <tr><td>+ free documentation</td></tr>
+<tr><td>- only at runtime</td></tr>
+<tr><td>- only for React Components</td></tr>
 </table>
 
 <aside class="notes"><p>documentation, but it might be wrong b/c you haven&#39;t updated the prop
@@ -294,25 +299,93 @@ recently.</p>
 </aside></script></section><section  data-markdown><script type="text/template">
 ## Static type checking
 with flow!
+
+<a href="https://flowtype.org/" style="font-size: 70%" >flowtype.org</a>
+</script></section><section  data-markdown><script type="text/template">
+### Static type checking
+
+```js
+//                argument type  return type
+function sayHello(name: string): string {
+  return "Hello " + name
+}
+ 
+ 
+ 
+ 
+ 
+ 
+//
+```
+</script></section><section  data-markdown><script type="text/template">
+### Static type checking
+
+```js
+//                argument type  return type
+function sayHello(name: string): string {
+  return "Hello " + name
+}
+// you can annotate variables if you want
+const age: number = 10
+// but flow's clever enough to infer most things
+const notherAge = 10
+//    ^ flow knows that notherAge is a number
+
+//
+```
+</script></section><section  data-markdown><script type="text/template">
+### Static type checking
+
+```js
+//                argument type  return type
+function sayHello(name: string): string {
+  return "Hello " + name
+}
+// you can annotate variables if you want
+const age: number = 10
+// but flow's clever enough to infer most things
+const notherAge = 10
+//    ^ flow knows that notherAge is a number
+const greeting = sayHello("React")
+//    ^ flow knows that greeting is a string!
+```
+</script></section><section  data-markdown><script type="text/template">
+### Static type checking
+
+```js
+// actually we can leave these out, flow's got it
+function sayHello(name) {
+  return "Hello " + name
+}
+// you can annotate variables if you want
+const age: number = 10
+// but flow's clever enough to infer most things
+const notherAge = 10
+//    ^ flow knows that notherAge is a number
+const greeting = sayHello("React")
+//    ^ flow knows that greeting is a string!
+```
 </script></section><section  data-markdown><script type="text/template">
 ### Static type checking
 vs custom runtime checking
 
 ```js
-function doSomething(a, b, c) {
+function greet(greeting, months, age) {
   if (arguments.length !== 3)
     throw new Error('must be called with 3 arguments')
-  if (typeof a !== 'string')
-    throw new Error('a must be a string')
-  if (!Array.isArray(b))
-    throw new Error('b must be an array')
-  if (typeof c !== 'number')
-    throw new Error('c must be a number')
+  if (typeof greeting !== 'string')
+    throw new Error('greeting must be a string')
+  if (!Array.isArray(months))
+    throw new Error('months must be an array')
+  if (typeof age !== 'number')
+    throw new Error('age must be a number')
 }
 ```
 
 ```js
-function doSomething(a: string, b: Array<string>, c: number) {
+function greet(greeting: string,
+               months: Array<string>,
+               age: number) {
 }
 ```
 </script></section><section  data-markdown><script type="text/template">
@@ -401,6 +474,17 @@ class Component extends MyThing {
 </tr>
 </table>
 
+<aside class="notes"><p>I like tables, because they allow me to show, unequivocally, that the
+thing I like is better than other things :D</p>
+</aside></script></section><section  data-markdown><script type="text/template">
+### Reactions to Flow @ KA
+
+- 😄 when adding flowtypes to code, it finds bugs!
+- 👎 editor integration is confusing
+- 😄 feel much safer making changes as a team
+- 😄 code is self-documenting!
+- 👎 new syntax + esnext can be overwhelming
+
 <aside class="notes"><p>At Khan Academy, we&#39;ve recently started using Flow in our production
 JavaScript, and on the whole we&#39;ve been very happy with the results.</p>
 </aside></script></section><section  data-markdown><script type="text/template">
@@ -426,7 +510,7 @@ that there are some functions where it&#39;s really hard to come up with a type
 that will satisfy <code>flow</code>. Nearly every time, I think about it a little &amp;
 realize that the function is being too clever.</p>
 </aside></script></section><section  data-markdown><script type="text/template">
-### Clever code
+## Clever code
 
 <aside class="notes"><p>There is a ton of valid javascript that flow would reject; so if we&#39;re
 restricting ourselves, what are we gaining?</p>
@@ -801,7 +885,7 @@ type Post = {
 ## Conclusion
 
 - JavaScript doesn't give us enough type errors
-- Flow can help!
+- Static type checking can help!
 - Working with types will help you think better
 
 </script></section><section  data-markdown><script type="text/template">
