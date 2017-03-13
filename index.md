@@ -428,7 +428,7 @@ const greeting = sayHello("React")
 ### Static type checking
 
 ```js
-//
+// actually we can leave these out, flow's got it
 function sayHello(name) {
   return "Hello " + name
 }
@@ -602,7 +602,7 @@ realize that the function is being too clever.
 
 ---
 
-### Clever code
+## Clever code
 
 Note: There is a ton of valid javascript that flow would reject; so if we're
 restricting ourselves, what are we gaining?
