@@ -367,6 +367,8 @@ recently.
 ## Static type checking
 with flow!
 
+<a href="https://flowtype.org/" style="font-size: 70%" >flowtype.org</a>
+
 ---
 
 ### Static type checking
@@ -554,6 +556,19 @@ class Component extends MyThing {
   <td>😄</td>
 </tr>
 </table>
+
+Note: I like tables, because they allow me to show, unequivocally, that the
+thing I like is better than other things :D
+
+---
+
+### Reactions to Flow @ KA
+
+- 😄 when adding flowtypes to code, it finds bugs!
+- 👎 editor integration is confusing
+- 😄 feel much safer making changes as a team
+- 😄 code is self-documenting!
+- 👎 new syntax + esnext can be overwhelming
 
 Note: At Khan Academy, we've recently started using Flow in our production
 JavaScript, and on the whole we've been very happy with the results.
