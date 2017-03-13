@@ -568,7 +568,7 @@ your code would be <em>more</em> complicated &amp; less readable as a result. Yo
 have to keep more things in your head (&quot;is X initialized yet?&quot;) as a result,
 and you&#39;d have more bugs.</p>
 </aside></script></section><section  data-markdown><script type="text/template">
-# Implicit state machines
+## Implicit state machines
 
 <aside class="notes"></aside></script></section><section  data-markdown><script type="text/template">
 ### Example: KA mobile app
@@ -748,7 +748,56 @@ messages back and forth, or you&#39;re making API calls, or you&#39;re displayin
 complex data.</p>
 <p>Now there are definitely situations where &quot;move fast &amp; type later&quot; is
 perfectly valid.</p>
+<p>This isn&#39;t new -- there are comments in my JavaScript just like this</p>
 </aside></script></section><section  data-markdown><script type="text/template">
+#### A Types First Approach
+```js
+/**
+ * NOTE "post" looks like
+ * { title, createdDate, contents, authors }
+ * where an author looks like
+ * { name, location, numberOfPosts }
+ */
+```
+</script></section><section  data-markdown><script type="text/template">
+#### A Types First Approach
+```js
+type Post = {
+  title: string,
+  createDate: Date,
+  contents: string,
+  authors: Array<{
+    name: string,
+    location: string,
+    numberOfPosts: number,
+  }>,
+}
+```
+</script></section><section  data-markdown><script type="text/template">
+### When to write Types First?
+
+<table>
+<thead>
+  <tr><th>Types First</th><th>Types Later</th></tr>
+</thead>
+<tbody>
+  <tr>
+<td>
+  <ul>
+    <li>State machines</li>
+    <li>Remote data types</li>
+  </ul>
+</td>
+<td>
+  <ul>
+    <li>Simple data</li>
+    <li>Complex interaction</li>
+  </ul>
+</td>
+</tr>
+</tbody>
+</table>
+</script></section><section  data-markdown><script type="text/template">
 ## Conclusion
 
 - JavaScript doesn't give us enough type errors
@@ -762,6 +811,23 @@ perfectly valid.</p>
 
 </script></section></div>
         </div>
+
+        <div id="footer" style="
+  position: absolute;
+  left: 30px;
+  bottom: 30px;
+  height: auto;
+  width: auto;
+  font-size: 2em;
+  right: 30px;
+  display: flex;
+
+" class="reveal">
+  @jaredforsyth
+  <div style="flex: 1"></div>
+  <a href="https://jaredforsyth.com/type-systems-js-dev">jaredforsyth.com/type-systems-js-dev</a>
+</div>
+
 
         <script src="./lib/js/head.min.js"></script>
         <script src="./js/reveal.js"></script>
@@ -804,10 +870,10 @@ perfectly valid.</p>
             // options from URL query string
             var queryOptions = Reveal.getQueryHash() || {};
 
-            var options = {"transition":"fade","showNotes":false};
+            var options = {"transition":"fade","showNotes":false,"controls":false};
             options = extend(defaultOptions, options, queryOptions);
             Reveal.initialize(options);
         </script>
-        
+
     </body>
 </html>
