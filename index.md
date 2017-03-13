@@ -48,6 +48,9 @@ the errors that are in our code.
 Then we'll talk about how thinking with types will improve your code, make
 your coworkers happier and improve your peace of mind.
 
+Finally I'm going to talk about how having a powerful type system changes the
+way that you code, to make it safer, more readable, and more maintainable.
+
 ---
 
 ### What is a type?
@@ -105,6 +108,10 @@ Note: So a type error, for my purposes, is "when you try to use a thing in a
 context where it doesn't work". Now, I'm being intentionally general when I
 say "in a context where it doesn't work", because that means different things
 to different people, and to different language runtimes.
+
+If you pass a number in to a place that expects something with a `name`
+attribute, that's wrong! So I'd consider that a type error, but JS doesn't. So
+type errors depend on the context, language runtime, etc.
 
 ---
 
@@ -201,7 +208,7 @@ Note: animate in.
 ## Linters
 
 Note: you might be thinking "Linters? They don't have anything to do with
-types". But in fact they know about 2 types: any and "not declared"
+types". But in fact they know about 2 types: declared and "not declared"
 
 Umm maybe cut this section?
 
@@ -209,7 +216,7 @@ Umm maybe cut this section?
 
 ### Linters know about 2 types
 
-- any
+- declared
 - not declared
 
 ```js
@@ -242,20 +249,20 @@ TODO animate between
 Sometimes useful, frequently annoying.
 
 ```js
-// `doSomething` takes 3 arguments:
+// `greet` takes 3 arguments:
 // a string, a list, and a number
 
 // Valid usage
-doSomething("hello", ["June"], 10)
-doSomething("hello", ["June", "July"], 10)
+greet("hello", ["June"], 10)
+greet("hello", ["June", "July"], 10)
 
 // Should be errors
-doSomething()
-doSomething("hello", "June")
-doSomething(1, 2, 3, 4, 5, 6)
+greet()
+greet("hello", "June")
+greet(1, 2, 3, 4, 5, 6)
 ```
 
-Note: Say you have a function `doSomething`, which takes three arguments
+Note: Say you have a function `greet`, which takes three arguments
 
 Now, what are situations in which a function would be called with incorrect
 arguments? Hopefully not immediately on the day you write it (although that
@@ -271,7 +278,7 @@ arguments!
 Sometimes useful, frequently annoying.
 
 ```js
-function doSomething(a, b, c) {
+function greet(greeting, months, age) {
   if (arguments.length !== 3)
     throw new Error('must be called with 3 arguments')
 }
@@ -284,15 +291,15 @@ function doSomething(a, b, c) {
 Sometimes useful, frequently annoying.
 
 ```js
-function doSomething(a, b, c) {
+function greet(greeting, months, age) {
   if (arguments.length !== 3)
     throw new Error('must be called with 3 arguments')
-  if (typeof a !== 'string')
-    throw new Error('a must be a string')
-  if (!Array.isArray(b))
-    throw new Error('b must be an array')
-  if (typeof c !== 'number')
-    throw new Error('c must be a number')
+  if (typeof greeting !== 'string')
+    throw new Error('greeting must be a string')
+  if (!Array.isArray(months))
+    throw new Error('months must be an array')
+  if (typeof age !== 'number')
+    throw new Error('age must be a number')
 }
 ```
 
@@ -308,9 +315,9 @@ Note: If you're using runtime type checks to do things that a type checker
 ### Custom runtime type checking
 
 <table>
-<tr><td>- only at runtime</td></tr>
-<tr><td>- lots of extra boilerplaty code</td></tr>
 <tr><td>+ very powerful</td></tr>
+<tr><td>- lots of extra boilerplaty code</td></tr>
+<tr><td>- only at runtime</td></tr>
 </table>
 
 ---
@@ -322,9 +329,9 @@ Runtime type checking, but less annoying.
 ```
 const MyThing = React.createClass({
   propTypes: {
-    first: PropTypes.number,
-    second: PropTypes.arrayOf(PropTypes.string),
-    third: PropTypes.shape({
+    greeting: PropTypes.string,
+    months: PropTypes.arrayOf(PropTypes.string),
+    person: PropTypes.shape({
       name: PropTypes.string,
     })
   },
@@ -345,10 +352,10 @@ you use are listed there.
 ### React propTypes
 
 <table>
-<tr><td>- only at runtime</td></tr>
-<tr><td>- only for React Components</td></tr>
 <tr><td>+ not too much extra code</td></tr>
 <tr><td>+ free documentation</td></tr>
+<tr><td>- only at runtime</td></tr>
+<tr><td>- only for React Components</td></tr>
 </table>
 
 Note: documentation, but it might be wrong b/c you haven't updated the prop
@@ -363,23 +370,97 @@ with flow!
 ---
 
 ### Static type checking
+
+```js
+//                argument type  return type
+function sayHello(name: string): string {
+  return "Hello " + name
+}
+ 
+ 
+ 
+ 
+ 
+ 
+//
+```
+
+---
+
+### Static type checking
+
+```js
+//                argument type  return type
+function sayHello(name: string): string {
+  return "Hello " + name
+}
+// you can annotate variables if you want
+const age: number = 10
+// but flow's clever enough to infer most things
+const notherAge = 10
+//    ^ flow knows that notherAge is a number
+
+//
+```
+
+---
+
+### Static type checking
+
+```js
+//                argument type  return type
+function sayHello(name: string): string {
+  return "Hello " + name
+}
+// you can annotate variables if you want
+const age: number = 10
+// but flow's clever enough to infer most things
+const notherAge = 10
+//    ^ flow knows that notherAge is a number
+const greeting = sayHello("React")
+//    ^ flow knows that greeting is a string!
+```
+
+---
+
+### Static type checking
+
+```js
+//
+function sayHello(name) {
+  return "Hello " + name
+}
+// you can annotate variables if you want
+const age: number = 10
+// but flow's clever enough to infer most things
+const notherAge = 10
+//    ^ flow knows that notherAge is a number
+const greeting = sayHello("React")
+//    ^ flow knows that greeting is a string!
+```
+
+---
+
+### Static type checking
 vs custom runtime checking
 
 ```js
-function doSomething(a, b, c) {
+function greet(greeting, months, age) {
   if (arguments.length !== 3)
     throw new Error('must be called with 3 arguments')
-  if (typeof a !== 'string')
-    throw new Error('a must be a string')
-  if (!Array.isArray(b))
-    throw new Error('b must be an array')
-  if (typeof c !== 'number')
-    throw new Error('c must be a number')
+  if (typeof greeting !== 'string')
+    throw new Error('greeting must be a string')
+  if (!Array.isArray(months))
+    throw new Error('months must be an array')
+  if (typeof age !== 'number')
+    throw new Error('age must be a number')
 }
 ```
 
 ```js
-function doSomething(a: string, b: Array<string>, c: number) {
+function greet(greeting: string,
+               months: Array<string>,
+               age: number) {
 }
 ```
 
@@ -943,7 +1024,7 @@ type Post = {
 ## Conclusion
 
 - JavaScript doesn't give us enough type errors
-- Flow can help!
+- Static type checking can help!
 - Working with types will help you think better
 
 
