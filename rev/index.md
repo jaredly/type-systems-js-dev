@@ -3,10 +3,9 @@ title: Type systems will make you a better JavaScript programmer
 theme: mine
 revealOptions:
   transition: fade
-  showNotes: true
+  showNotes: false
 
 ---
-
 
 # Type systems
 ### will make you a better
@@ -197,7 +196,6 @@ Umm maybe cut this section?
 - not declared
 
 ```js
-// myfn.js
 function doSomething(argument) {
   return brgment + 1 // ERROR brgment is never declared
 }
@@ -230,14 +228,14 @@ Sometimes useful, frequently annoying.
 // `doSomething` takes 3 arguments:
 // a string, a list, and a number
 
+// Valid usage
+doSomething("hello", ["June"], 10)
+doSomething("hello", ["June", "July"], 10)
+
 // Should be errors
 doSomething()
 doSomething("hello", "June")
 doSomething(1, 2, 3, 4, 5, 6)
-
-// Valid usage
-doSomething("hello", ["June"], 10)
-doSomething("hello", ["June", "July"], 10)
 ```
 
 Note: Say you have a function `doSomething`, which takes three arguments
@@ -293,7 +291,7 @@ Note: If you're using runtime type checks to do things that a type checker
 ### Custom runtime type checking
 
 <table>
-<tr><td>- runs at runtime</td></tr>
+<tr><td>- only at runtime</td></tr>
 <tr><td>- lots of extra boilerplaty code</td></tr>
 <tr><td>+ very powerful</td></tr>
 </table>
@@ -330,7 +328,7 @@ you use are listed there.
 ### React propTypes
 
 <table>
-<tr><td>- runs at runtime</td></tr>
+<tr><td>- only at runtime</td></tr>
 <tr><td>- only for React Components</td></tr>
 <tr><td>+ not too much extra code</td></tr>
 <tr><td>+ free documentation</td></tr>
