@@ -880,20 +880,3 @@ perfectly valid.
 
 [jaredforsyth.com/type-systems-js-dev](https://jaredforsyth.com/type-systems-js-dev)
 
----
-
-## Reasons I get frustrated at flow
-
-- trying to type nodejs-style callbacks. TODO I should just look this up
-- `import type {Children} from 'react'`? It's type `any`. Gee thanks.
-
----
-
-## Times flow blows me away
-
-- inference is really impressive
-- the object shape + forEach thing.
-- inferring proptypes from other usages
-
-Note:
-TODO add code examples for these, it's awesome.
