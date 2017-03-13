@@ -30,6 +30,24 @@ extraHTML: |
 
 by Jared Forsyth
 
+<img src="images/kalogo.png" style="border:none; box-shadow: none; height: 50px" />
+
+Note:
+Hi, I'm Jared Forsyth, and I'll be talking about how Type Systems will make
+you a better JavaScript Programmer.
+
+I work at Khan Academy, and we're working to create a free, world-class
+education for anyone, anywhere!
+I work on the mobile team, which means that in addition to JavaScript, I write
+Java, Objective C, and Swift! Which are all compiled languages that have much
+more developed type checking than JavaScript.
+
+So I've seen both sides -- the
+flexibility that JavaScript provides, and the power and security that working
+in one of these compiled langauges gives you.
+
+And I think that adding a powerful type system to your JavaScript brings a ton of benefits.
+
 ---
 
 ### JavaScript's type system
@@ -105,11 +123,11 @@ type.
 when you try to use a thing in a context where it doesn't work.
 
 Note: So a type error, for my purposes, is "when you try to use a thing in a
-context where it doesn't work". Now, I'm being intentionally general when I
-say "in a context where it doesn't work", because that means different things
-to different people, and to different language runtimes.
+context where it doesn't work".
 
-If you pass a number in to a place that expects something with a `name`
+And that can mean different things to different language runtimes.
+
+For example, if you pass a number in to a place that expects something with a `name`
 attribute, that's wrong! So I'd consider that a type error, but JS doesn't. So
 type errors depend on the context, language runtime, etc.
 
@@ -124,6 +142,9 @@ but not nearly as many as one would want.
 Note: JavaScript has very few kinds of type errors; they're triggered when you
 try to call something that's not a function, and when you try to get an
 attribute of null or undefined.
+
+And this limited vocabulary for expressing errors has two unfortunate
+outcomes.
 
 ---
 
