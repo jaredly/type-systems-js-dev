@@ -19,7 +19,21 @@
 ### JavaScript programmer
 
 by Jared Forsyth
-</script></section><section  data-markdown><script type="text/template">
+
+<img src="images/kalogo.png" style="border:none; box-shadow: none; height: 50px" />
+
+<aside class="notes"><p>Hi, I&#39;m Jared Forsyth, and I&#39;ll be talking about how Type Systems will make
+you a better JavaScript Programmer.</p>
+<p>I work at Khan Academy, and we&#39;re working to create a free, world-class
+education for anyone, anywhere!
+I work on the mobile team, which means that in addition to JavaScript, I write
+Java, Objective C, and Swift! Which are all compiled languages that have much
+more developed type checking than JavaScript.</p>
+<p>So I&#39;ve seen both sides -- the
+flexibility that JavaScript provides, and the power and security that working
+in one of these compiled langauges gives you.</p>
+<p>And I think that adding a powerful type system to your JavaScript brings a ton of benefits.</p>
+</aside></script></section><section  data-markdown><script type="text/template">
 ### JavaScript's type system
 ### How to get more type errors
 ### Thinking with types
@@ -80,10 +94,9 @@ type.</p>
 when you try to use a thing in a context where it doesn't work.
 
 <aside class="notes"><p>So a type error, for my purposes, is &quot;when you try to use a thing in a
-context where it doesn&#39;t work&quot;. Now, I&#39;m being intentionally general when I
-say &quot;in a context where it doesn&#39;t work&quot;, because that means different things
-to different people, and to different language runtimes.</p>
-<p>If you pass a number in to a place that expects something with a <code>name</code>
+context where it doesn&#39;t work&quot;.</p>
+<p>And that can mean different things to different language runtimes.</p>
+<p>For example, if you pass a number in to a place that expects something with a <code>name</code>
 attribute, that&#39;s wrong! So I&#39;d consider that a type error, but JS doesn&#39;t. So
 type errors depend on the context, language runtime, etc.</p>
 </aside></script></section><section  data-markdown><script type="text/template">
@@ -96,6 +109,8 @@ but not nearly as many as one would want.
 <aside class="notes"><p>JavaScript has very few kinds of type errors; they&#39;re triggered when you
 try to call something that&#39;s not a function, and when you try to get an
 attribute of null or undefined.</p>
+<p>And this limited vocabulary for expressing errors has two unfortunate
+outcomes.</p>
 </aside></script></section><section  data-markdown><script type="text/template">
 ### Either you get weird type errors late
 
