@@ -865,6 +865,62 @@ complex data.
 Now there are definitely situations where "move fast & type later" is
 perfectly valid.
 
+This isn't new -- there are comments in my JavaScript just like this
+
+---
+
+#### A Types First Approach
+```js
+/**
+ * NOTE "post" looks like
+ * { title, createdDate, contents, authors }
+ * where an author looks like
+ * { name, location, numberOfPosts }
+ */
+```
+
+---
+
+#### A Types First Approach
+```js
+type Post = {
+  title: string,
+  createDate: Date,
+  contents: string,
+  authors: Array<{
+    name: string,
+    location: string,
+    numberOfPosts: number,
+  }>,
+}
+```
+
+---
+
+### When to write Types First?
+
+<table>
+<thead>
+  <tr><th>Types First</th><th>Types Later</th></tr>
+</thead>
+<tbody>
+  <tr>
+<td>
+  <ul>
+    <li>State machines</li>
+    <li>Remote data types</li>
+  </ul>
+</td>
+<td>
+  <ul>
+    <li>Simple data</li>
+    <li>Complex interaction</li>
+  </ul>
+</td>
+</tr>
+</tbody>
+</table>
+
 ---
 
 ## Conclusion
