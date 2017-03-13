@@ -669,15 +669,15 @@ Note:
 font-size: 20px; justify-content: center">
 <div style="display: block">
 <div>Loading</div>
-<img src="/images/loading1.png" width=200>
+<img src="images/loading1.png" width=200>
 </div>
 <div>
 <div>Answering</div>
-<img src="/images/answering.png" width=200>
+<img src="images/answering.png" width=200>
 </div>
 <div>
 <div>Finished</div>
-<img src="/images/finished.png" width=200>
+<img src="images/finished.png" width=200>
 </div>
 </div>
 
