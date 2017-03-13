@@ -83,8 +83,7 @@ type.
 
 ### What are type errors?
 
-- when you try to use a thing in a context where it doesn't work.
-- "undefined is not a function"
+when you try to use a thing in a context where it doesn't work.
 
 Note: So a type error, for my purposes, is "when you try to use a thing in a
 context where it doesn't work". Now, I'm being intentionally general when I
@@ -122,7 +121,11 @@ from the actual source of the error.
 
 ---
 
-### ...or type errors become logic errors
+![](images/not_work.jpg)
+
+---
+
+### ...or no errors at all
 
 ```js
 function doSomething(m) {
@@ -144,6 +147,10 @@ anything it considers a type error.
 These are frequently even harder to debug, because you don't have an
 `exception` stack trace to get you started. You just have to pause in the
 middle of a running session and try to figure out how your data got so weird.
+
+---
+
+![](images/works.jpg)
 
 ---
 
@@ -424,31 +431,31 @@ class Component extends MyThing {
 </tr>
 <tr>
   <th>How easy</th>
-  <td>++</td>
-  <td>--</td>
-  <td>+</td>
-  <td>+</td>
+  <td>😄</td>
+  <td>🚫</td>
+  <td>😊</td>
+  <td>🙂</td>
 </tr>
 <tr>
   <th>Where can it be used?</th>
-  <td>+</td>
-  <td>+</td>
-  <td>-</td>
-  <td>+</td>
+  <td>🙂</td>
+  <td>😄</td>
+  <td>🚫</td>
+  <td>😄</td>
 </tr>
 <tr>
-<th>How helpful</th>
-<td>--</td>
-<td>++</td>
-<td>+</td>
-<td>+++</td>
+  <th>How helpful</th>
+  <td>🚫</td>
+  <td>😊</td>
+  <td>🙂</td>
+  <td>😄</td>
 </tr>
 <tr>
-<th>Readability</th>
-<td/>
-<td>-</td>
-<td>+</td>
-<td>+</td>
+  <th>Readability</th>
+  <td/>
+  <td>🚫</td>
+  <td>🙂</td>
+  <td>😄</td>
 </tr>
 </table>
 
@@ -473,7 +480,7 @@ But now I want to talk about how it will change the way you program.
 
 - clever code
 - implicit invariants
-- type-first development
+- implicit state machines
 
 Note:
 
@@ -491,6 +498,12 @@ restricting ourselves, what are we gaining?
 
 Code that flow can type is also code that other people will be able to
 understand better.
+
+---
+
+> Everyone knows that debugging is twice as hard as writing a program in the first place.
+> So if you're as clever as you can be when you write it, how will you ever debug it?
+> - Brian Kernighan
 
 ---
 
@@ -534,27 +547,6 @@ unclever
 ---
 
 > If it's hard to type check, it's probably hard to understand
-
----
-
-<!--
-## Write unclever code
-
-If you're at your most clever when you write the code, what hope do you have
-of debugging it later?
-
-- - -
-
-> If you're having a hard time writing the type of an object or function,
-> maybe it's too clever.
-
-- - -
-
--->
-
-> Everyone knows that debugging is twice as hard as writing a program in the first place.
-> So if you're as clever as you can be when you write it, how will you ever debug it?
-> - Brian Kernighan
 
 ---
 
@@ -666,17 +658,14 @@ and you'd have more bugs.
 
 ---
 
-# Redux!
+# Implicit state machines
 
-state machines here too
-
-Note: Maybe your app has gotten complex enough that you want to add redux into
-  the mix. How do you deal with the implicit state machines that develop?
+Note:
 
 
 ---
 
-### The Exercise Lifecycle
+### Example: KA mobile app
 
 <div style="display: flex; flex-direction: row; align-items: flex-end;
 font-size: 20px; justify-content: center">
@@ -889,6 +878,12 @@ perfectly valid.
 
 ---
 
+### FIN
+
+[jaredforsyth.com/type-systems-js-dev](https://jaredforsyth.com/type-systems-js-dev)
+
+---
+
 ## Reasons I get frustrated at flow
 
 - trying to type nodejs-style callbacks. TODO I should just look this up
@@ -904,9 +899,3 @@ perfectly valid.
 
 Note:
 TODO add code examples for these, it's awesome.
-
----
-
-### FIN
-
-[jaredforsyth.com/type-systems-js-dev](https://jaredforsyth.com/type-systems-js-dev)
