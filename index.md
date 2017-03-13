@@ -4,6 +4,23 @@ theme: mine
 revealOptions:
   transition: fade
   showNotes: false
+  controls: false
+extraHTML: |
+  <div id="footer" style="
+    position: absolute;
+    left: 30px;
+    bottom: 30px;
+    height: auto;
+    width: auto;
+    font-size: 2em;
+    right: 30px;
+    display: flex;
+
+  " class="reveal">
+    @jaredforsyth
+    <div style="flex: 1"></div>
+    <a href="https://jaredforsyth.com/type-systems-js-dev">jaredforsyth.com/type-systems-js-dev</a>
+  </div>
 
 ---
 
@@ -656,7 +673,7 @@ and you'd have more bugs.
 
 ---
 
-# Implicit state machines
+## Implicit state machines
 
 Note:
 
