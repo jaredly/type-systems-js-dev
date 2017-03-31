@@ -986,7 +986,7 @@ type Post = {
             // options from URL query string
             var queryOptions = Reveal.getQueryHash() || {};
 
-            var options = {"transition":"fade","showNotes":false,"controls":false};
+            var options = {"transition":"fade","showNotes":true,"controls":true};
             options = extend(defaultOptions, options, queryOptions);
             Reveal.initialize(options);
         </script>
