@@ -3,8 +3,8 @@ title: Type systems will make you a better JavaScript programmer
 theme: mine
 revealOptions:
   transition: fade
-  showNotes: false
-  controls: false
+  showNotes: true
+  controls: true
 extraHTML: |
   <div id="footer" style="
     position: absolute;
