@@ -50,6 +50,25 @@ And I think that adding a powerful type system to your JavaScript brings a ton o
 
 ---
 
+### Cool things I like
+
+<table>
+<tr>
+<td>structured editors</td>
+<td>algebraic effects</td>
+</tr>
+<tr>
+<td>continuous integration</td>
+<td>continuations</td>
+</tr>
+<tr>
+<td>algebraic data types</td>
+<td>react native</td>
+</tr>
+</table>
+
+---
+
 ### JavaScript's type system
 ### How to get more type errors
 ### Thinking with types
