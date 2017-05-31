@@ -111,8 +111,22 @@ Let's define some terms here first.
 
 ### What is a type?
 
-- a group of things
-- that can be used interchangeably
+<table>
+<tr>
+<td style="width:400px;vertical-align:middle">
+<ul>
+<li>a group of things</li>
+<li>that can be used interchangeably</li>
+</ul>
+</td>
+<td>
+<video autoplay src="images/baby.mp4"
+loop
+width=300
+>
+</td>
+</tr>
+</table>
 
 Note: In very broad terms, you can think of a type as a group of things that
 can be used interchangeably.
@@ -158,7 +172,21 @@ type.
 
 ### What are type errors?
 
+<table>
+<tr>
+<td style="width:400px;vertical-align:middle">
 when you try to use a thing in a context where it doesn't work.
+
+</td>
+<td>
+<video autoplay src="images/baby.mp4"
+loop
+width=300
+>
+</td>
+</tr>
+</table>
+
 
 Note: So a type error, for my purposes, is "when you try to use a thing in a
 context where it doesn't work".
@@ -171,7 +199,7 @@ type errors depend on the context, language runtime, etc.
 
 ---
 
-### JavaScript has (runtime) type errors!
+### JavaScript has type errors!
 but not nearly as many as one would want.
 
 - `_ is not a function`
@@ -1112,7 +1140,8 @@ class X {
 
   someMethod(): string {
     if (this.maybeString) {
-      var reallyString = this.maybeString // grrrr flow
+      // NOTE this is just to appease flow
+      var reallyString = this.maybeString
       doSomething()
       return reallyString
     }
@@ -1132,6 +1161,8 @@ const doSomething = () => 2
 
 ### When 80% typed isn't enough
 
+Library functions are `any` by default
+
 ```js
 // @flow
 
@@ -1147,6 +1178,8 @@ const criticalFunction = (config: {name: string}): number => {
 ---
 
 ### When 80% typed isn't enough
+
+You'll add `any` to skip work
 
 ```js
 // TODO make a type for config
@@ -1169,6 +1202,104 @@ The other is that you're now relying on human intervention to clean things up.
 By my count, here at Khan Academy, we have 357 javascript files in the webapp
 with the '@flow' pragma, and 183 uses of `any`, in 84 files - almost a
 quarter.
+
+---
+
+## What if you want more?
+
+- Elm
+- Reason/OCaml
+- (lots of others too)
+
+---
+
+### Elm
+
++ 👍 solid documentation
++ 👍 friendly error messages
++ 👍 coherent tooling
+- 🚫 very locked down JS interop
+- 🚫 fairly young language / type system
+- 🚫 I can't stand the syntax
+
+---
+
+### Reason/OCaml
+
++ 👍 very mature language
++ 👍 awesome type system
++ 👍 very pragmatic (mutability)
++ 👍 excellent JS interop
++ 👍 can also compile to native
+- 🚫 horrid documentation
+- 🚫 build tooling still settling
+
+---
+
+## Comparison of the things
+
+<table>
+<tr>
+<td/>
+<td>TS</td>
+<td>Flow</td>
+<td>Elm</td>
+<td>Reason</td>
+</tr>
+<tr>
+<th>IDE integration</th>
+<td>😊</td>
+<td>🙂</td>
+<td>🙂</td>
+<td>🚫</td>
+</tr>
+<tr>
+<th>Build tooling</th>
+<td>🙂</td>
+<td/>
+<td>😊</td>
+<td>🚫</td>
+</tr>
+<tr>
+<th>Type system</th>
+<td>🙂</td>
+<td>😊</td>
+<td>😄</td>
+<td>😄🎉</td>
+</tr>
+<tr>
+<th>Maturity</th>
+<td>🙂</td>
+<td>🙂</td>
+<td>😊</td>
+<td>😄</td>
+</tr>
+<tr>
+<th>Documentation</th>
+<td>😊</td>
+<td>🙂</td>
+<td>😊</td>
+<td>🚫</td>
+</tr>
+<tr>
+<th>Hassle</th>
+<td>🙂</td>
+<td>😄</td>
+<td>🙂</td>
+<td>🚫</td>
+</tr>
+</table>
+
+---
+
+### Flow or TypeScript?
+
+| Flow | TypeScript |
+| ---- | ---------- |
+| great w/ babel + webpack | owns whole build chain |
+| more powerful type system | better documentation |
+| better inference | better community |
+| easier inc. adoption | more IDE features |
 
 ---
 
