@@ -4,7 +4,7 @@ theme: mine
 revealOptions:
   transition: fade
   showNotes: true
-  controls: true
+  controls: false
 extraHTML: |
   <div id="footer" style="
     position: absolute;
@@ -65,13 +65,18 @@ And I think that adding a powerful type system to your JavaScript brings a ton o
 <td>algebraic data types</td>
 <td>react native</td>
 </tr>
+<tr>
+<td>reason/ocaml</td>
+<td>editor tooling</td>
+</tr>
 </table>
 
 ---
 
-### JavaScript's type system
+### Why you want more type errors
 ### How to get more type errors
 ### Thinking with types
+### ...beyond
 
 Note:
 So what's this about?
@@ -87,6 +92,20 @@ your coworkers happier and improve your peace of mind.
 
 Finally I'm going to talk about how having a powerful type system changes the
 way that you code, to make it safer, more readable, and more maintainable.
+
+buut then I'll go into what lies beyond hahaha
+
+---
+
+## More type errors!
+
+![moar](images/moar.jpg)
+
+Note:
+You've probably been thinking that what you want is fewer errors, but in fact!
+What you want is more.
+
+Let's define some terms here first.
 
 ---
 
@@ -123,11 +142,11 @@ type.
 <td>string</td>
 </tr>
 <tr>
-<td>function</td>
+<td>boolean</td>
 <td>undefined</td>
 </tr>
 <tr>
-<td>boolean</td>
+<td>function</td>
 <td>symbol</td>
 </tr>
 <tr>
@@ -241,7 +260,11 @@ problems.
 - custom runtime type checking
 - static type checking
 
-Note: animate in.
+Note:
+These first two are pretty commonly used, but I'm going to make the case that
+static type checking is really the best of both worlds.
+
+TODO animate in?
 
 ---
 
@@ -408,6 +431,24 @@ recently.
 with flow!
 
 <a href="https://flowtype.org/" style="font-size: 70%" >flowtype.org</a>
+
+---
+
+### Setup
+
+- grab a plugin for your favorite IDE
+- install flow (`npm install -g flow-bin`)
+- add `// @flow` to the top of a js file
+
+Note:
+webstorm supports natively, and there are really great plugins for vscode,
+atom, vim, etc.
+
+Flow puts a big emphasis on supporting incremental adoption. To start using it
+on a file, you just add the comment at the top. And immediately from there,
+Flow will infer the types of values and functions in that file & let you know
+about errors there. You can then add annotations to improve readability and
+lock down anything that flow can't infer.
 
 ---
 
@@ -999,6 +1040,35 @@ certainly won't be clear to a coworker, or to you a month from now.
 > represent a state machine poorly.
 
 ---
+
+# Thinking with types
+
+- clever code
+- implicit invariants
+- implicit state machines
+
+
+---
+
+# Beyond incremental typing
+
+Note:
+Now, there are a lot of things I love about flow, and I'm very happy that we
+have it in our codebases at work, it's not all sunshine and roses.
+
+---
+
+## When 80% typed isn't enough
+
+20% unsafe can very well mean 100% of users see bugs.
+
+
+
+
+
+---
+
+# PROBALBY NOT
 
 ## A Types First Approach
 
