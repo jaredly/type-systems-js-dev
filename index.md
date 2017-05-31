@@ -1041,7 +1041,7 @@ certainly won't be clear to a coworker, or to you a month from now.
 
 ---
 
-# Thinking with types
+## Thinking with types
 
 - clever code
 - implicit invariants
@@ -1050,7 +1050,7 @@ certainly won't be clear to a coworker, or to you a month from now.
 
 ---
 
-# Beyond incremental typing
+## Beyond incremental typing
 
 Note:
 Now, there are a lot of things I love about flow, and I'm very happy that we
@@ -1058,13 +1058,117 @@ have it in our codebases at work, it's not all sunshine and roses.
 
 ---
 
-## When 80% typed isn't enough
+### Some things Flow can't handle
+
+---
+
+#### Higher order React components
+
+```
+const makeFancyComponent = (ChildComponent) => {
+  return class FancyWrapper extends React.Component {
+    ...
+  }
+}
+const MyNewComponent = makeFancyComponent(SomeChildComponent)
+```
+
+Type system can't express them
+
+Note:
+Higher order components are a pattern that gets used a fair amount in React,
+and I haven't found a way to type-annotate them to Flow's satisfaction. The
+type system doesn't seem to be powerful enough.
+
+---
+
+#### Optional attributes becoming un-optional
+
+```
+class X {
+  maybeString: ?string
+
+  someMethod(): string {
+    if (this.maybeString) {
+      doSomething()
+      // flow thinks that this.maybeString could
+      // have somehow become undefined b/c we called
+      // a function, and complains here
+      return this.maybeString
+    }
+  }
+}
+// definitely doesn't mutate `this.maybeString`
+const doSomething = () => 2
+```
+
+---
+
+#### Optional attributes becoming un-optional
+
+```
+class X {
+  maybeString: ?string
+
+  someMethod(): string {
+    if (this.maybeString) {
+      var reallyString = this.maybeString // grrrr flow
+      doSomething()
+      return reallyString
+    }
+  }
+}
+// definitely doesn't mutate `this.maybeString`
+const doSomething = () => 2
+```
+
+---
+
+### When 80% typed isn't enough
 
 20% unsafe can very well mean 100% of users see bugs.
 
+---
 
+### When 80% typed isn't enough
 
+```js
+// @flow
 
+// If we don't have a type declaration set up for this
+// external library, it gets treated as "any"
+import _ from 'underscore'
+
+const criticalFunction = (config: {name: string}): number => {
+  return _.pick(config, 'name').naem // lol no errors
+}
+```
+
+---
+
+### When 80% typed isn't enough
+
+```js
+// TODO make a type for config
+const criticalFunction = (config: any) => {
+  // all bets are off for inference about config!
+  // ...
+}
+```
+
+Note:
+When you're moving fast, you'll toss in an `any` to get
+flow to be quiet (flow throws an error if any exported function isn't
+annotated). This is also super tempting -- and pragmatic -- when you're
+migrating a large file over to being typed.
+
+There are 2 problems with this. One: `any` types are infectious -- type
+inference essentially bails when dealing with a value marked as `any`.
+
+The other is that you're now relying on human intervention to clean things up.
+By my count, here at Khan Academy, we have 357 javascript files in the webapp
+with the '@flow' pragma, and 183 uses of `any`, in 84 files - almost a
+quarter.
 
 ---
 
