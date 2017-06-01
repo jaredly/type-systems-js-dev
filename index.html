@@ -49,11 +49,16 @@ in one of these compiled langauges gives you.</p>
 <td>algebraic data types</td>
 <td>react native</td>
 </tr>
+<tr>
+<td>reason/ocaml</td>
+<td>editor tooling</td>
+</tr>
 </table>
 </script></section><section  data-markdown><script type="text/template">
-### JavaScript's type system
+### Why you want more type errors
 ### How to get more type errors
 ### Thinking with types
+### ...beyond
 
 <aside class="notes"><p>So what&#39;s this about?</p>
 <p>First I&#39;ll give a brief overview of javascript&#39;s type system, and how it
@@ -64,11 +69,38 @@ the errors that are in our code.</p>
 your coworkers happier and improve your peace of mind.</p>
 <p>Finally I&#39;m going to talk about how having a powerful type system changes the
 way that you code, to make it safer, more readable, and more maintainable.</p>
+<p>buut then I&#39;ll go into what lies beyond hahaha</p>
+<p>Before I start though - how many of you have used types in your javascript?
+(if a lot, then I&#39;ll say &quot;here&#39;s a way to convince your co-workers to get on
+board&quot;)
+How many of you have used a statically type-checked language?
+How many of you hated it?</p>
+</aside></script></section><section  data-markdown><script type="text/template">
+## More type errors!
+
+<img src="images/moar.jpg"
+  width=400
+/>
+
+<aside class="notes"><p>You&#39;ve probably been thinking that what you want is fewer errors, but in fact!
+What you want is more.</p>
+<p>Let&#39;s define some terms here first.</p>
 </aside></script></section><section  data-markdown><script type="text/template">
 ### What is a type?
 
-- a group of things
-- that can be used interchangeably
+<table>
+<tr>
+<td style="width:400px;vertical-align:middle">
+<ul>
+<li>a group of things</li>
+<li>that can be used interchangeably</li>
+</ul>
+</td>
+<td>
+<img src="images/baby.gif">
+</td>
+</tr>
+</table>
 
 <aside class="notes"><p>In very broad terms, you can think of a type as a group of things that
 can be used interchangeably.</p>
@@ -94,11 +126,11 @@ type.</p>
 <td>string</td>
 </tr>
 <tr>
-<td>function</td>
+<td>boolean</td>
 <td>undefined</td>
 </tr>
 <tr>
-<td>boolean</td>
+<td>function</td>
 <td>symbol</td>
 </tr>
 <tr>
@@ -108,7 +140,19 @@ type.</p>
 </script></section><section  data-markdown><script type="text/template">
 ### What are type errors?
 
+<table>
+<tr>
+<td style="width:400px;vertical-align:middle">
 when you try to use a thing in a context where it doesn't work.
+
+</td>
+<td>
+<img src="images/baby.gif"
+>
+</td>
+</tr>
+</table>
+
 
 <aside class="notes"><p>So a type error, for my purposes, is &quot;when you try to use a thing in a
 context where it doesn&#39;t work&quot;.</p>
@@ -117,7 +161,7 @@ context where it doesn&#39;t work&quot;.</p>
 attribute, that&#39;s wrong! So I&#39;d consider that a type error, but JS doesn&#39;t. So
 type errors depend on the context, language runtime, etc.</p>
 </aside></script></section><section  data-markdown><script type="text/template">
-### JavaScript has (runtime) type errors!
+### JavaScript has type errors!
 but not nearly as many as one would want.
 
 - `_ is not a function`
@@ -189,10 +233,12 @@ problems.</p>
 ## How to get more type errors
 
 - linters
-- custom runtime type checking
+- custom runtime checking
 - static type checking
 
-<aside class="notes"><p>animate in.</p>
+<aside class="notes"><p>These first two are pretty commonly used, but I&#39;m going to make the case that
+static type checking is really the best of both worlds.</p>
+<p>TODO animate in?</p>
 </aside></script></section><section  data-markdown><script type="text/template">
 ## Linters
 
@@ -224,7 +270,9 @@ error until runtime when the code gets executed.</p>
 <tr><td>- very rudimentary</td></tr>
 </table>
 </script></section><section  data-markdown><script type="text/template">
-### Custom runtime type checking
+## Custom runtime checking
+</script></section><section  data-markdown><script type="text/template">
+### Custom runtime checking
 
 Sometimes useful, frequently annoying.
 
@@ -250,7 +298,7 @@ variables get added, removed, reused. And suddently it takes a lot of effort
 during a refactor to make sure you&#39;re just calling functions with the correct
 arguments!</p>
 </aside></script></section><section  data-markdown><script type="text/template">
-### Custom runtime type checking
+### Custom runtime checking
 
 Sometimes useful, frequently annoying.
 
@@ -261,7 +309,7 @@ function greet(greeting, months, age) {
 }
 ```
 </script></section><section  data-markdown><script type="text/template">
-### Custom runtime type checking
+### Custom runtime checking
 
 Sometimes useful, frequently annoying.
 
@@ -284,7 +332,7 @@ function greet(greeting, months, age) {
   are libraries that will check schemas at runtime to take away some of the
   boilerplate.</p>
 </aside></script></section><section  data-markdown><script type="text/template">
-### Custom runtime type checking
+### Custom runtime checking
 
 <table>
 <tr><td>+ very powerful</td></tr>
@@ -385,7 +433,7 @@ const greeting = sayHello("React")
 ### Static type checking
 
 ```js
-// actually we can leave these out, flow's got it
+// Look ma, no annotations!
 function sayHello(name) {
   return "Hello " + name
 }
@@ -512,9 +560,9 @@ thing I like is better than other things :D</p>
 ### Reactions to Flow @ KA
 
 - 😄 when adding flowtypes to code, it finds bugs!
-- 👎 editor integration is confusing
 - 😄 feel much safer making changes as a team
 - 😄 code is self-documenting!
+- 👎 editor integration is confusing
 - 👎 new syntax + esnext can be overwhelming
 
 <aside class="notes"><p>At Khan Academy, we&#39;ve recently started using Flow in our production
@@ -536,6 +584,7 @@ which will help us</p>
 - clever code
 - implicit invariants
 - implicit state machines
+- write down data types first
 
 <aside class="notes"><p>One of the things I&#39;ve run into when adding flow to an existing project is
 that there are some functions where it&#39;s really hard to come up with a type
@@ -571,6 +620,7 @@ unclever
 </script></section><section  data-markdown><script type="text/template">
 ### Clever code
 
+messing w/ arguments
 ```js
   function doAllTheThings(first, second, third) {
     if (third === undefined) {
@@ -580,9 +630,10 @@ unclever
   }
 ```
 
+"flag" arguments
 ```js
-  function doAllTheThings(isBoolean, data) {
-    if (isBoolean) { // data is a boolean
+  function doAllTheThings(dataIsBoolean, data) {
+    if (dataIsBoolean) { // data is a boolean
     } else { // data is a string
     }
   }
@@ -609,7 +660,9 @@ unclever
   }
 ```
 
-<aside class="notes"><p>frequently we have React components that are really representing little
+<aside class="notes"><p>TODO explain optionals
+also explain how I&#39;m using react, but it applies to other stuff.</p>
+<p>frequently we have React components that are really representing little
 state machines. Here&#39;s an example that might look familiar -- we have a
 component that fetches some data, and so it starts out loading, and it will
 either display an error on failure or display the data in some wonderful way.</p>
@@ -617,6 +670,7 @@ either display an error on failure or display the data in some wonderful way.</p
 ### Implicit invariants
 
 ```js
+  state: { loading: boolean, error: ?string, data: ?SomeObject }
   onClick = () => {
     // Flow errors: "this.state.data might be null"
     alert(this.state.data.name)
@@ -633,6 +687,7 @@ either display an error on failure or display the data in some wonderful way.</p
 ### Implicit invariants
 
 ```js
+  state: { loading: boolean, error: ?string, data: ?SomeObject }
   onClick = () => {
     if (!this.state.data)
       throw new Error('lol this will never happen')
@@ -654,6 +709,10 @@ been triggered if data wasn&#39;t present!&quot;</p>
 <p>so what do we do here? How can we get flow off our backs by proving to
 it that, if the button w/ the onClick handler was rendered, then
 <code>this.state.data</code> is definitely true?</p>
+<p>Turns out it&#39;s not that hard
+What we need to do is ensure that <code>onClick</code> literally can&#39;t be called unless
+data is populated. Currently it happens that we&#39;re only calling it when data
+is populated, but that&#39;s not enforced by the structure of the code.</p>
 </aside></script></section><section  data-markdown><script type="text/template">
 ### Implicit invariants
 
@@ -665,6 +724,7 @@ it that, if the button w/ the onClick handler was rendered, then
   }
 }
 class TheContents extends Component {
+  props: {data: SomeObject}
   onClick = () => {
     alert(this.props.data.name) // props.data is never null!
   }
@@ -850,33 +910,19 @@ certainly won&#39;t be clear to a coworker, or to you a month from now.</p>
 > If you're making a ton of things optional, you're probably trying to
 > represent a state machine poorly.
 </script></section><section  data-markdown><script type="text/template">
-## A Types First Approach
+### Write down data types first
 
-If you have any complex data objects, write out the types before you dive into
-coding.
-
-<aside class="notes"><p>Once you get comfortable with the types that flow gives yu</p>
-<p>I&#39;ve found that there are some types of problems where thinking about the
-types first -- specifically the types of the data -- is much better than
-diving into the code and adding types later.</p>
-<p>We looked at state machines just now. But also in cases where you&#39;re passing
-messages back and forth, or you&#39;re making API calls, or you&#39;re displaying
-complex data.</p>
-<p>Now there are definitely situations where &quot;move fast &amp; type later&quot; is
-perfectly valid.</p>
-<p>This isn&#39;t new -- there are comments in my JavaScript just like this</p>
+<aside class="notes"><p>Once I got into the mindset of thinking about the types I&#39;m working with
+in an explicit fashion, I would frequently find myself planning out, first and
+foremost, what the data types look like.
+What shape will the data have?
+What are the possible states for this component to be in
+What kind of signature do I want this function to have?</p>
+<p>Don&#39;t get me wrong: I&#39;m not advocating for java-style class hierarchies
+and UML diagrams -- just thinking about what the data will look lke.</p>
 </aside></script></section><section  data-markdown><script type="text/template">
-#### A Types First Approach
-```js
-/**
- * NOTE "post" looks like
- * { title, createdDate, contents, authors }
- * where an author looks like
- * { name, location, numberOfPosts }
- */
-```
-</script></section><section  data-markdown><script type="text/template">
-#### A Types First Approach
+#### Write down data types first
+
 ```js
 type Post = {
   title: string,
@@ -890,40 +936,178 @@ type Post = {
 }
 ```
 </script></section><section  data-markdown><script type="text/template">
-### When to write Types First?
+## Thinking with types
+
+- avoid clever code
+- make invariants explicit
+- make state machines explicit
+- write down data types first
+</script></section><section  data-markdown><script type="text/template">
+### When 80% typed isn't enough
+
+20% unsafe can very well mean 100% of users see bugs.
+
+<aside class="notes"><p>Now, there are a lot of things I love about flow, and I&#39;m very happy that we
+have it in our codebases at work, it&#39;s not all sunshine and roses.</p>
+</aside></script></section><section  data-markdown><script type="text/template">
+### When 80% typed isn't enough
+
+Library functions are "`any`" by default
+
+```js
+// @flow
+
+// If we don't have a type declaration set up for this
+// external library, it gets treated as "any"
+import _ from 'underscore'
+
+const criticalFunction = (config: {name: string}): number => {
+  return _.pick(config, 'name').naem // lol no errors
+}
+```
+</script></section><section  data-markdown><script type="text/template">
+### When 80% typed isn't enough
+
+You'll use "`any`" to just get on with things
+
+```js
+// TODO make a type for config
+const criticalFunction = (config: any) => {
+  // all bets are off for inference about config!
+  // ...
+}
+```
+
+<img src="images/baby.gif">
+
+<aside class="notes"><p>When you&#39;re moving fast, you&#39;ll toss in an <code>any</code> to get
+flow to be quiet (flow throws an error if any exported function isn&#39;t
+annotated). This is also super tempting -- and pragmatic -- when you&#39;re
+migrating a large file over to being typed.</p>
+<p>There are 2 problems with this. One: <code>any</code> types are infectious -- type
+inference essentially bails when dealing with a value marked as <code>any</code>.</p>
+<p>The other is that you&#39;re now relying on human intervention to clean things up.
+By my count, here at Khan Academy, we have 357 javascript files in the webapp
+with the &#39;@flow&#39; pragma, and 183 uses of <code>any</code>, in 84 files - almost a
+quarter.</p>
+</aside></script></section><section  data-markdown><script type="text/template">
+## Flow & TypeScript compromise soundness
+
+<aside class="notes"><p>not sure if I want this slide?</p>
+</aside></script></section><section  data-markdown><script type="text/template">
+## What if you want more?
+
+- Elm
+- Reason/OCaml
+- (lots of others too)
+
+<aside class="notes"><p>This is to just whet your pallet
+give you all a teaser about, if you&#39;re interested going deeper into the &quot;more
+typed&quot; world. I&#39;d definitely recommend Elm and Reason as very interesting
+projects to check out.</p>
+</aside></script></section><section  data-markdown><script type="text/template">
+### Elm
+
++ 👍 solid documentation
++ 👍 friendly error messages
++ 👍 coherent tooling
+- 🚫 very locked down JS interop
+- 🚫 fairly young language / type system
+- 🚫 I can't stand the syntax
+</script></section><section  data-markdown><script type="text/template">
+### Reason/OCaml
+
++ 👍 very mature language
++ 👍 awesome type system
++ 👍 very pragmatic (mutability)
++ 👍 excellent JS interop
++ 👍 can also compile to native
+- 🚫 horrid documentation
+- 🚫 build tooling still settling
+</script></section><section  data-markdown><script type="text/template">
+## Comparison of the things
 
 <table>
-<thead>
-  <tr><th>Types First</th><th>Types Later</th></tr>
-</thead>
-<tbody>
-  <tr>
-<td>
-  <ul>
-    <li>State machines</li>
-    <li>Remote data types</li>
-  </ul>
-</td>
-<td>
-  <ul>
-    <li>Simple data</li>
-    <li>Complex interaction</li>
-  </ul>
-</td>
+<tr>
+<td/>
+<td>TS</td>
+<td>Flow</td>
+<td>Elm</td>
+<td>Reason</td>
 </tr>
-</tbody>
+<tr>
+<th>IDE integration</th>
+<td>😄</td>
+<td>😊</td>
+<td>🙂</td>
+<td>🚫</td>
+</tr>
+<tr>
+<th>JS Interop</th>
+<td>😄</td>
+<td>😄</td>
+<td>🚫</td>
+<td>😊</td>
+</tr>
+<tr>
+<th>Type system</th>
+<td>🙂</td>
+<td>😊</td>
+<td>😄</td>
+<td>😄🎉</td>
+</tr>
+<tr>
+<th>Maturity</th>
+<td>🙂</td>
+<td>🙂</td>
+<td>😊</td>
+<td>😄</td>
+</tr>
+<tr>
+<th>Inference</th>
+<td>🙂</td>
+<td>😊</td>
+<td>😄</td>
+<td>😄</td>
+</tr>
+<tr>
+<th>Documentation</th>
+<td>😊</td>
+<td>🙂</td>
+<td>😊</td>
+<td>🚫</td>
+</tr>
+<tr>
+<th>Ease of adoption</th>
+<td>😊</td>
+<td>😄</td>
+<td>🙂</td>
+<td>🚫</td>
+</tr>
 </table>
+</script></section><section  data-markdown><script type="text/template">
+### Flow or TypeScript?
+
+| Flow | TypeScript |
+| ---- | ---------- |
+| great w/ babel + webpack | owns whole build chain |
+| more powerful type system | better documentation |
+| better inference | better community |
+| easier inc. adoption | more IDE features |
 </script></section><section  data-markdown><script type="text/template">
 ## Conclusion
 
 - JavaScript doesn't give us enough type errors
 - Static type checking can help!
 - Working with types will help you think better
-
+- You might want a 100% type system instead of 80%
 </script></section><section  data-markdown><script type="text/template">
 ### FIN
 
 [jaredforsyth.com/type-systems-js-dev](https://jaredforsyth.com/type-systems-js-dev)
+
+<img src="images/kalogo.png" style="border:none; box-shadow: none; height: 50px" />
+
 
 </script></section></div>
         </div>
@@ -986,7 +1170,7 @@ type Post = {
             // options from URL query string
             var queryOptions = Reveal.getQueryHash() || {};
 
-            var options = {"transition":"fade","showNotes":true,"controls":true};
+            var options = {"transition":"fade","showNotes":false,"controls":false};
             options = extend(defaultOptions, options, queryOptions);
             Reveal.initialize(options);
         </script>
